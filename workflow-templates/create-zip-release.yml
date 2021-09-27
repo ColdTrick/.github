@@ -1,0 +1,35 @@
+name: Create ZIP Release
+
+on:
+  release:
+    types: [published, created, edited, prereleased, released]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    env:
+        ZIP_FILE: ${{github.repository}}_${{}}.zip
+
+    steps:
+      - uses: actions/checkout@v2
+        id: branch
+        run: |
+            echo ::set-output name=ZIP_FILE::${GITHUB_REPOSITORY#*/}_${GITHUB_REF#refs/tags/}.zip
+
+      - name: Composer Install
+        run: composer install --no-dev --ignore-platform-reqs
+        
+      - name: Make Zip
+        uses: thedoctor0/zip-release@master
+        with:
+            type: 'zip'
+            filename: ${{ steps.branch.outputs.ZIP_FILE }}
+            exclusions: '*.git*
+
+      - name: Upload Asset
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: ${{ steps.branch.outputs.ZIP_FILE }}
+            token: ${{ secrets.GITHUB_TOKEN }}
+        
