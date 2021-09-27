@@ -1,0 +1,11 @@
+{
+    "name": "Create ZIP Release",
+    "description": "Creates a ZIP asset and uploads it to a release",
+    "iconName": "create-zip",
+    "categories": [
+        "PHP"
+    ],
+    "filePatterns": [
+        "composer.json"
+    ]
+}
