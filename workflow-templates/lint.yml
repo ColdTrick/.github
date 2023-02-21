@@ -4,4 +4,4 @@ on: [push, pull_request]
 
 jobs:
   lint:
-    uses: ColdTrick/.github/.github/workflows/lint.yml
+    uses: ColdTrick/.github/.github/workflows/lint.yml@master
