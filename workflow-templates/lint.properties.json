@@ -1,0 +1,12 @@
+{
+  "name": "Lint checks",
+  "description": "Perform various lint checks on the code and commit message",
+  "iconName": "octicon checklist",
+  "categories": [
+	"PHP"
+  ],
+  "filePatterns": [
+	"composer.json",
+	"elgg-plugin.php"
+  ]
+}

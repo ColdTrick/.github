@@ -1,0 +1,46 @@
+name: Lint checks
+
+on:
+  workflow_call:
+
+jobs:
+  commit_message:
+    name: Validate the commit message
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Code checkout
+        uses: actions/checkout@v2
+
+      - name: Check format
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^((Merge )|(Revert )|((\w*)\: ([^\n]*)(\n\n?(.*))?)$)'
+          flags: 'is'
+          error: 'Invalid commit message format'
+          excludeTitle: true
+          excludeDescription: true
+          checkAllCommitMessages: true
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check line length
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^.{1,72}(\n|$)'
+          flags: ''
+          error: 'Maximum line length of 72 characters exceeded on the first line'
+          excludeTitle: true
+          excludeDescription: true
+          checkAllCommitMessages: true
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check type
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^((Merge )|(Revert )|(added|changed|chore|fixed|misc|removed)?:)'
+          flags: 'is'
+          error: 'Invalid commit message type'
+          excludeTitle: true
+          excludeDescription: true
+          checkAllCommitMessages: true
+          accessToken: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,7 @@
+name: Lint checks
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    uses: ColdTrick/.github/.github/workflows/lint.yml
