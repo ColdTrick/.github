@@ -79,7 +79,7 @@ jobs:
           composer require --dev elgg/sniffs:dev-master
 
       - name: PHP Code Style checks
-        run: vendor/bin/phpcs --standard=vendor/elgg/sniffs/src/Elgg -sp --ignore=*/vendor/*,*/vendors/*,*/tests/* .
+        run: vendor/bin/phpcs --standard=vendor/elgg/sniffs/src/Elgg -sp .
 
   languages_lint:
     name: Validate language files are UTF-8 encoded
