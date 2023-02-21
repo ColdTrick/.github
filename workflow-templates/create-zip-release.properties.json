@@ -1,7 +1,7 @@
 {
     "name": "Create ZIP Release",
     "description": "Creates a ZIP asset and uploads it to a release",
-    "iconName": "create-zip",
+    "iconName": "octicon file-zip",
     "categories": [
         "PHP"
     ],
