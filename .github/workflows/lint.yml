@@ -10,10 +10,10 @@ jobs:
     steps:
 
       - name: Code checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Check format
-        uses: gsactions/commit-message-checker@v1
+        uses: gsactions/commit-message-checker@v2
         with:
           pattern: '^((Merge )|(Revert )|((\w*)\: ([^\n]*)(\n\n?(.*))?)$)'
           flags: 'is'
@@ -24,7 +24,7 @@ jobs:
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check line length
-        uses: gsactions/commit-message-checker@v1
+        uses: gsactions/commit-message-checker@v2
         with:
           pattern: '^.{1,72}(\n|$)'
           flags: ''
@@ -35,7 +35,7 @@ jobs:
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check type
-        uses: gsactions/commit-message-checker@v1
+        uses: gsactions/commit-message-checker@v2
         with:
           pattern: '^((Merge )|(Revert )|(added|changed|chore|fixed|misc|removed)?:)'
           flags: 'is'
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Code checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Check encoding of language files
         run: echo '! find ./languages/ -name "*.php" -type f -exec file --mime {} \; | grep -v "charset=utf-8$" | grep -v "charset=us-ascii$"' | bash
