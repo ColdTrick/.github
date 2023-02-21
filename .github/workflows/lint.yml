@@ -45,6 +45,42 @@ jobs:
           checkAllCommitMessages: true
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
+  php_lint:
+    name: Validate composer.json and PHP Coding style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: gd,pdo,xml,json,mysqli,pdo_mysql
+
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore Composer Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Composer validate
+        run: composer validate
+
+      - name: Composer install
+        run: |
+          composer install
+          composer require --dev elgg/sniffs:dev-master
+
+      - name: PHP Code Style checks
+        run: vendor/bin/phpcs --standard=vendor/elgg/sniffs/src/Elgg -sp --ignore=*/vendor/*,*/vendors/*,*/tests/* .
+
   languages_lint:
     name: Validate language files are UTF-8 encoded
     runs-on: ubuntu-latest
