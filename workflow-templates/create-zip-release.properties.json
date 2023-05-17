@@ -6,6 +6,7 @@
         "PHP"
     ],
     "filePatterns": [
-        "composer.json"
+        "composer.json",
+        "elgg-plugin.php"
     ]
 }
