@@ -14,8 +14,8 @@ jobs:
       - name: Set ZIP filename
         id: branch
         run: |
-            echo ::set-output name=PROJECT_NAME::${GITHUB_REPOSITORY#*/}
-            echo ::set-output name=ZIP_FILE::${GITHUB_REPOSITORY#*/}_${GITHUB_REF#refs/tags/}.zip
+            echo PROJECT_NAME=${GITHUB_REPOSITORY#*/} >> ${GITHUB_OUTPUT}
+            echo ZIP_FILE=${GITHUB_REPOSITORY#*/}_${GITHUB_REF#refs/tags/}.zip >> ${GITHUB_OUTPUT}
 
       - name: Composer Install
         run: composer install --no-dev --ignore-platform-reqs
