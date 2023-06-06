@@ -1,0 +1,89 @@
+name: PHPUnit Plugin Tests
+
+on:
+  workflow_call:
+
+env:
+  ELGG_DB_PREFIX: c_i_elgg_
+  ELGG_DB_HOST: 127.0.0.1
+  ELGG_DB_NAME: elgg
+  ELGG_DB_USER: root
+  ELGG_DB_PASS: password
+  ELGG_WWWROOT: http://localhost:8888/
+  ELGG_MEMCACHE_SERVER1_HOST: 127.0.0.1
+  ELGG_MEMCACHE_SERVER1_PORT: 11211
+  ELGG_MEMCACHE_NAMESPACE_PREFIX: elgg_
+  ELGG_REDIS_SERVER1_HOST: 127.0.0.1
+  ELGG_REDIS_SERVER1_PORT: 6379
+
+jobs:
+  phpunit:
+    name: Run PHPUnit test suites
+    
+    runs-on: ubuntu-latest
+    
+    services:
+      elggdb:
+        image: 'mysql:8.0'
+        env:
+          MYSQL_DATABASE: elgg
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: gd,pdo,xml,json,mysqli,pdo_mysql
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> ${GITHUB_OUTPUT}
+
+      - name: Restore Composer Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Code checkout Elgg
+        uses: actions/checkout@v3
+        with:
+          repository: 'Elgg/Elgg'
+          ref: '5.x'
+
+      - name: Code checkout plugin
+        uses: actions/checkout@v3
+        with:
+          clean: false
+          path: 'mod/${{ github.event.repository.name }}'
+
+      - name: Composer install Elgg
+        run: composer install
+
+      - name: Composer install Plugin
+        run: |
+          cd ./mod/${{ github.event.repository.name }}
+          composer install
+          cd ../..
+
+      - name: Install Site
+        run: php ./elgg-cli install --config ./install/cli/testing_app.php --verbose --no-ansi --no-plugins
+
+      - name: Activate plugin
+        run: php ./elgg-cli plugins:activate --force ${{ github.event.repository.name }}
+          
+      - name: Run plugin unit tests
+        if: hashFiles(format('mod/{0}/tests/phpunit/unit/**', github.event.repository.name)) != ''
+        run: ./vendor/bin/phpunit ./mod/${{ github.event.repository.name }}/tests/phpunit/unit
+          
+      - name: Run plugin integration tests
+        if: hashFiles(format('mod/{0}/tests/phpunit/integration/**', github.event.repository.name)) != ''
+        run: ./vendor/bin/phpunit ./mod/${{ github.event.repository.name }}/tests/phpunit/integration
+
+      - name: Run global plugin integration tests
+        run: ./vendor/bin/phpunit ./engine/tests/phpunit/plugins_integration

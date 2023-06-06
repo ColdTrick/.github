@@ -1,0 +1,12 @@
+{
+  "name": "PHPUnit Plugin Tests",
+  "description": "Installs your plugin on Elgg and runs PHPUnit test suites for your plugin",
+  "iconName": "octicon thumbsup",
+  "categories": [
+	"PHP"
+  ],
+  "filePatterns": [
+	"composer.json",
+	"elgg-plugin.php"
+  ]
+}
