@@ -1,0 +1,13 @@
+{
+    "name": "Tweet about a new release",
+    "description": "Send out a tweet when a new release is created",
+    "iconName": "octicon mention",
+    "categories": [
+        "PHP",
+        "Twitter"
+    ],
+    "filePatterns": [
+        "composer.json",
+        "elgg-plugin.php"
+    ]
+}
