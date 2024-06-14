@@ -7,6 +7,9 @@ on:
         description: 'Major Elgg version number'
         default: 5
         type: number
+      extra_composer_dependencies:
+        description: 'Additional composer dependencies (space separate multiple packages)'
+        type: string
 
 env:
   ELGG_DB_PREFIX: c_i_elgg_
@@ -74,6 +77,10 @@ jobs:
 
       - name: Composer install Elgg
         run: composer install
+
+      - name: Composer require additional dependencies
+        if: inputs.extra_composer_dependencies != ''
+        run: composer require ${{ inputs.extra_composer_dependencies }}
 
       - name: Composer install Plugin
         run: |
